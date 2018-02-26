@@ -10,7 +10,7 @@ package controllers;
         import java.util.List;
 
 @RestController
-public class CriterionController {
+public class CriterionsController {
 
     @Autowired
     private CriterionService criterionService;
