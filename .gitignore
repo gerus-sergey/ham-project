@@ -1,0 +1,19 @@
+target/
+
+# ignore idea files
+.idea/
+*.iml
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Log file
+*.log
+
+# Compiled class file
+*.class
