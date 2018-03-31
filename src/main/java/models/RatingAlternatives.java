@@ -2,6 +2,11 @@ package models;
 
 
 public class RatingAlternatives {
+    private Integer id;
+    private Integer dimensionId;
+    private Criterion alternativeId;
+    private Double rating;
+
     public Integer getId() {
         return id;
     }
@@ -33,9 +38,4 @@ public class RatingAlternatives {
     public void setRating(Double rating) {
         this.rating = rating;
     }
-
-    private Integer id;
-    private Integer dimensionId;
-    private Criterion alternativeId;
-    private Double rating;
 }
