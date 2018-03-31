@@ -42,6 +42,5 @@ public class CriterionsController {
         }
         criterionService.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
-
     }
 }
