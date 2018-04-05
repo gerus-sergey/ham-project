@@ -6,19 +6,19 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "ratingcriterions", schema = "public", catalog = "rating_bd")
-public class RatingCriterion implements Serializable {
+@Table(name = "ratingalternatives", schema = "public", catalog = "rating_bd")
+public class RatingAlternative implements Serializable {
     private Integer id;
     private Integer dimensionId;
-    private Criterion criterion;
+    private Alternative alternative;
     private Double rating;
     @JsonIgnore
     private String weights;
 
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ratingcriterions_seq")
-    @SequenceGenerator(name = "ratingcriterions_seq", sequenceName = "ratingcriterions_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ratingalternatives_seq")
+    @SequenceGenerator(name = "ratingalternatives_seq", sequenceName = "ratingalternatives_id_seq", allocationSize = 1)
     public Integer getId() {
         return id;
     }
@@ -37,13 +37,13 @@ public class RatingCriterion implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_criterion", referencedColumnName = "id", nullable = false)
-    public Criterion getCriterion() {
-        return criterion;
+    @JoinColumn(name = "id_alternative", referencedColumnName = "id", nullable = false)
+    public Alternative getAlternative() {
+        return alternative;
     }
 
-    public void setCriterion(Criterion criterion) {
-        this.criterion = criterion;
+    public void setAlternative(Alternative alternative) {
+        this.alternative = alternative;
     }
 
     @Column(name = "rating")

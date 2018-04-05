@@ -1,16 +1,43 @@
 package services.impl;
 
-import models.RatingAlternatives;
+import models.RatingAlternative;
+import org.springframework.beans.factory.annotation.Autowired;
+import repositories.RatingAlternativeRepository;
 import services.RatingAlternativesService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RatingAlternativesServiceImpl implements RatingAlternativesService {
 
+    @Autowired
+    private RatingAlternativeRepository ratingAlternativeRepository;
+
+    @Transactional
+    public RatingAlternative addOrUpdate(RatingAlternative obj) {
+        return ratingAlternativeRepository.saveAndFlush(obj);
+    }
+
+    @Transactional
+    public List<RatingAlternative> getAll() {
+        return ratingAlternativeRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        ratingAlternativeRepository.delete(id);
+    }
+
+    @Transactional
+    public RatingAlternative get(Integer id) {
+        return ratingAlternativeRepository.findOne(id);
+    }
+
     @Override
-    public ArrayList<RatingAlternatives> calculateRatingAlternatives(Integer dimensionId, String criterionNames, String criterionWeights, String alternativesNames, String alternativesWeights) {
+    public ArrayList<RatingAlternative> calculateRatingAlternatives(Integer dimensionId, String criterionNames, String criterionWeights, String alternativesNames, String alternativesWeights) {
 
         String nameAlternatives[] = alternativesNames.split(",");
         if (nameAlternatives != null) {

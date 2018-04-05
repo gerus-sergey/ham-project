@@ -1,22 +1,22 @@
 package controllers;
 
-import models.RatingAlternatives;
+import models.RatingAlternative;
+import models.RatingCriterion;
+import org.springframework.web.bind.annotation.*;
+import services.RatingAlternativesService;
 import services.impl.RatingAlternativesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class RatingAlternativesController {
 
     @Autowired
-    private RatingAlternativesServiceImpl ratingAlternativesService;
+    private RatingAlternativesService ratingAlternativesService;
 
     @PostMapping(value = "/rating-alternatives/{dimensionId}")
     public ResponseEntity calculateRatingAlternatives(@PathVariable("dimensionId") Integer id,
@@ -24,7 +24,7 @@ public class RatingAlternativesController {
                                                       @RequestHeader("criterionWeights") String criterionWeights,
                                                       @RequestHeader("alternativeNames") String alternativeNames,
                                                       @RequestHeader("alternativeWeights") String alternativeWeights) {
-        ArrayList<RatingAlternatives> ratingAlternatives = ratingAlternativesService.calculateRatingAlternatives(id, criterionNames, criterionWeights, alternativeNames, alternativeWeights);
+        ArrayList<RatingAlternative> ratingAlternatives = ratingAlternativesService.calculateRatingAlternatives(id, criterionNames, criterionWeights, alternativeNames, alternativeWeights);
         if (ratingAlternatives != null) {
             return new ResponseEntity(ratingAlternatives, HttpStatus.OK);
         } else {
@@ -32,4 +32,32 @@ public class RatingAlternativesController {
         }
     }
 
+    @GetMapping(path = "/rating-alternatives")
+    public List getRatingAlternatives() {
+        return ratingAlternativesService.getAll();
+    }
+
+    @GetMapping(path = "/rating-alternatives/{id}")
+    public ResponseEntity getRatingAlternative(@PathVariable("id") Integer id) {
+        RatingAlternative ratingAlternative = ratingAlternativesService.get(id);
+        if (ratingAlternative == null) {
+            return new ResponseEntity("No Alternative found for ID " + id, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(ratingAlternative, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/rating-alternatives")
+    public ResponseEntity createRatingAlternative(@RequestBody RatingAlternative ratingAlternative) {
+        ratingAlternativesService.addOrUpdate(ratingAlternative);
+        return new ResponseEntity(ratingAlternative, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/rating-alternatives/{id}")
+    public ResponseEntity deleteRatingAlternative(@PathVariable("id") Integer id) {
+        if (ratingAlternativesService.get(id) == null) {
+            return new ResponseEntity("No Alternative found for ID" + id, HttpStatus.NOT_FOUND);
+        }
+        ratingAlternativesService.delete(id);
+        return new ResponseEntity(id, HttpStatus.OK);
+    }
 }
