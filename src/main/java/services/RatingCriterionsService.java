@@ -1,9 +1,9 @@
 package services;
 
-import models.RatingCriterions;
+import models.RatingCriterion;
 
 import java.util.ArrayList;
 
-public interface RatingCriterionsService {
-    ArrayList<RatingCriterions> calculateRatingCriterions(Integer dimensionId, String criterionNames, String criterionWeights);
+public interface RatingCriterionsService extends CRUDService<RatingCriterion, Integer>{
+    ArrayList<RatingCriterion> calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriteria);
 }
