@@ -20,13 +20,10 @@ public class RatingAlternativesController {
 
     @PostMapping(value = "/rating-alternatives/{dimensionId}")
     public ResponseEntity calculateRatingAlternatives(@PathVariable("dimensionId") Integer id,
-                                                      @RequestHeader("criterionNames") String criterionNames,
-                                                      @RequestHeader("criterionWeights") String criterionWeights,
-                                                      @RequestHeader("alternativeNames") String alternativeNames,
-                                                      @RequestHeader("alternativeWeights") String alternativeWeights) {
-        ArrayList<RatingAlternative> ratingAlternatives = ratingAlternativesService.calculateRatingAlternatives(id, criterionNames, criterionWeights, alternativeNames, alternativeWeights);
-        if (ratingAlternatives != null) {
-            return new ResponseEntity(ratingAlternatives, HttpStatus.OK);
+                                                      @RequestBody ArrayList<RatingAlternative> ratingAlternatives) {
+        ArrayList<RatingAlternative> ratingAlternativesResult = ratingAlternativesService.calculateRatingAlternatives(id, ratingAlternatives);
+        if (ratingAlternativesResult != null) {
+            return new ResponseEntity(ratingAlternativesResult, HttpStatus.OK);
         } else {
             return new ResponseEntity("Error ", HttpStatus.NOT_FOUND);
         }
@@ -59,5 +56,14 @@ public class RatingAlternativesController {
         }
         ratingAlternativesService.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/rating-alternatives/dimension/{dimensionId}")
+    public ResponseEntity getRatingAlternativeByDimensionId(@PathVariable("dimensionId") Integer dimensionId) {
+        ArrayList<RatingAlternative> ratingAlternatives = ratingAlternativesService.getRatingAlternativeByDimensionId(dimensionId);
+        if (ratingAlternatives == null) {
+            return new ResponseEntity("No rating-alternatives found for dimensionId " + dimensionId, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(ratingAlternatives, HttpStatus.OK);
     }
 }

@@ -1,8 +1,10 @@
 package services.impl;
 
 import models.RatingAlternative;
+import models.RatingCriterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import repositories.RatingAlternativeRepository;
+import repositories.RatingCriterionRepository;
 import services.RatingAlternativesService;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ public class RatingAlternativesServiceImpl implements RatingAlternativesService 
 
     @Autowired
     private RatingAlternativeRepository ratingAlternativeRepository;
+
+    @Autowired
+    private RatingCriterionRepository ratingCriterionRepository;
 
     @Transactional
     public RatingAlternative addOrUpdate(RatingAlternative obj) {
@@ -36,33 +41,40 @@ public class RatingAlternativesServiceImpl implements RatingAlternativesService 
         return ratingAlternativeRepository.findOne(id);
     }
 
-    @Override
-    public ArrayList<RatingAlternative> calculateRatingAlternatives(Integer dimensionId, String criterionNames, String criterionWeights, String alternativesNames, String alternativesWeights) {
+    @Transactional
+    public ArrayList<RatingAlternative> getRatingAlternativeByDimensionId(Integer dimensionId){
+        return ratingAlternativeRepository.getRatingAlternativeByDimensionId(dimensionId);
+    }
 
-        String nameAlternatives[] = alternativesNames.split(",");
-        if (nameAlternatives != null) {
-            String weightAlternativesArray[] = alternativesWeights.split(",");
-            String weightCriterionArray[] = criterionWeights.split(",");
-            String nameCriterionParams[] = criterionNames.split(",");
+    @Override
+    public ArrayList<RatingAlternative> calculateRatingAlternatives(Integer dimensionId, ArrayList<RatingAlternative> ratingAlternatives) {
+
+        if (!ratingAlternatives.isEmpty()) {
+            ArrayList<RatingCriterion> ratingCriterions = ratingCriterionRepository.getRatingCriterionByDimensionId(dimensionId);
+            String weights = "";
+            for (RatingAlternative ratingAlternative : ratingAlternatives) {
+                weights = weights.concat(ratingAlternative.getWeights().concat(","));
+            }
+            String[] weightAlternativesArray = weights.split(",");
 
             int countAlternatives = 0;
-            Double weightAlternatives[][] = new Double[nameAlternatives.length][nameCriterionParams.length];
+            Double weightAlternatives[][] = new Double[ratingAlternatives.size()][ratingCriterions.size()];
 
-            for (int i = 0; i < nameAlternatives.length; i++) {
-                for (int j = 0; j < nameCriterionParams.length; j++) {
+            for (int i = 0; i < ratingAlternatives.size(); i++) {
+                for (int j = 0; j < ratingCriterions.size(); j++) {
                     weightAlternatives[i][j] = Double.valueOf(weightAlternativesArray[countAlternatives]);
                     countAlternatives++;
                 }
             }
 
             Double rank = 1.0;
-            Double geometricMean[] = new Double[nameAlternatives.length];
+            Double geometricMean[] = new Double[ratingAlternatives.size()];
             int m = 0;
 
-            for (int i = 0; i < nameAlternatives.length; i++) {
-                for (int j = 0; j < nameCriterionParams.length + 1; j++) {
-                    if (j != nameCriterionParams.length) {
-                        rank *= Math.pow(weightAlternatives[i][j], Double.parseDouble(weightCriterionArray[j]));
+            for (int i = 0; i < ratingAlternatives.size(); i++) {
+                for (int j = 0; j < ratingCriterions.size() + 1; j++) {
+                    if (j != ratingCriterions.size()) {
+                        rank *= Math.pow(weightAlternatives[i][j], ratingCriterions.get(j).getRating());
                     } else {
                         geometricMean[m] = rank;
                         m++;
@@ -77,11 +89,14 @@ public class RatingAlternativesServiceImpl implements RatingAlternativesService 
                 sumGeometric += geometricMean[a];
             }
 
-            Long normalizedWeight[] = new Long[nameAlternatives.length];
+            Long normalizedWeight[] = new Long[ratingAlternatives.size()];
 
             for (int b = 0; b < geometricMean.length; b++) {
-                normalizedWeight[b] = Math.round((geometricMean[b] / sumGeometric) * 10000) / 100;
+                ratingAlternatives.get(b).setDimensionId(dimensionId);
+                ratingAlternatives.get(b).setRating((double) (Math.round((geometricMean[b] / sumGeometric) * 10000) / 100));
+                addOrUpdate(ratingAlternatives.get(b));
             }
+            return ratingAlternatives;
         }
         return null;
     }

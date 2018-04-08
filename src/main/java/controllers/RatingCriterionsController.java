@@ -56,4 +56,13 @@ public class RatingCriterionsController {
         ratingCriterionsService.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/rating-criterions/dimension/{dimensionId}")
+    public ResponseEntity getRatingCriterionByDimensionId(@PathVariable("dimensionId") Integer dimensionId) {
+        ArrayList<RatingCriterion> ratingCriterion = ratingCriterionsService.getRatingCriterionByDimensionId(dimensionId);
+        if (ratingCriterion == null) {
+            return new ResponseEntity("No rating-criterions found for dimensionId " + dimensionId, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(ratingCriterion, HttpStatus.OK);
+    }
 }

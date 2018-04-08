@@ -13,6 +13,34 @@ import java.util.List;
 @Service
 public class RatingCriterionsServiceImpl implements RatingCriterionsService {
 
+    @Autowired
+    private RatingCriterionRepository ratingCriterionRepository;
+
+    @Transactional
+    public RatingCriterion addOrUpdate(RatingCriterion obj) {
+        return ratingCriterionRepository.saveAndFlush(obj);
+    }
+
+    @Transactional
+    public List<RatingCriterion> getAll() {
+        return ratingCriterionRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        ratingCriterionRepository.delete(id);
+    }
+
+    @Transactional
+    public RatingCriterion get(Integer id) {
+        return ratingCriterionRepository.findOne(id);
+    }
+
+    @Transactional
+    public ArrayList<RatingCriterion> getRatingCriterionByDimensionId(Integer dimensionId){
+        return ratingCriterionRepository.getRatingCriterionByDimensionId(dimensionId);
+    }
+
     @Override
     public ArrayList<RatingCriterion> calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriterion) {
 
@@ -53,35 +81,12 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
                 sumGeometric += aGeometricMean;
             }
             for (int b = 0; b < geometricMean.length; b++) {
-                ratingCriterion.get(b).setRating(geometricMean[b] / sumGeometric * 100);
+                ratingCriterion.get(b).setRating(geometricMean[b] / sumGeometric);
                 ratingCriterion.get(b).setDimensionId(dimensionId);
                 addOrUpdate(ratingCriterion.get(b));
             }
             return ratingCriterion;
         }
         return null;
-    }
-
-    @Autowired
-    private RatingCriterionRepository ratingCriterionRepository;
-
-    @Transactional
-    public RatingCriterion addOrUpdate(RatingCriterion obj) {
-        return ratingCriterionRepository.saveAndFlush(obj);
-    }
-
-    @Transactional
-    public List<RatingCriterion> getAll() {
-        return ratingCriterionRepository.findAll();
-    }
-
-    @Transactional
-    public void delete(Integer id) {
-        ratingCriterionRepository.delete(id);
-    }
-
-    @Transactional
-    public RatingCriterion get(Integer id) {
-        return ratingCriterionRepository.findOne(id);
     }
 }

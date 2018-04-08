@@ -12,7 +12,6 @@ public class RatingAlternative implements Serializable {
     private Integer dimensionId;
     private Alternative alternative;
     private Double rating;
-    @JsonIgnore
     private String weights;
 
     @Id
