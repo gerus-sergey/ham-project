@@ -1,6 +1,5 @@
 package models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +11,6 @@ public class RatingCriterion implements Serializable {
     private Integer dimensionId;
     private Criterion criterion;
     private Double rating;
-    @JsonIgnore
     private String weights;
 
     @Id

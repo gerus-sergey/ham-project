@@ -14,59 +14,51 @@ import java.util.List;
 public class RatingCriterionsServiceImpl implements RatingCriterionsService {
 
     @Override
-    public ArrayList<RatingCriterion> calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriteria) {
+    public ArrayList<RatingCriterion> calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriterion) {
 
-          String a = ratingCriteria.get(1).getWeights();
-//        if (!criterionNames.isEmpty() || !criterionWeights.isEmpty()) {
-//            String nameCriterion[] = criterionNames.split(",");
-//            ArrayList<RatingCriterion> ratingCriteria = new ArrayList<RatingCriterion>();
-//            Double weight = 1.0;
-//            int m = 0;
-//            Double geometricMean[] = new Double[nameCriterion.length];
-//
-//            if (nameCriterion != null) {
-//                String weightCriterionArray[] = criterionWeights.split(",");
-//                Double weightCriterion[][] = new Double[nameCriterion.length][nameCriterion.length];
-//                int countCriterion = 0;
-//                Double sumGeometric = 0.0;
-//                Double normalizedWeight[] = new Double[nameCriterion.length];
-//                for (int i = 0; i < nameCriterion.length; i++) {
-//                    for (int j = 0; j < nameCriterion.length; j++) {
-//                        weightCriterion[i][j] = Double.valueOf(weightCriterionArray[countCriterion]);
-//                        countCriterion++;
-//                    }
-//                }
-//
-//                for (int i = 0; i < weightCriterion.length; i++) {
-//                    for (int j = 0; j < weightCriterion.length + 1; j++) {
-//                        if (j != weightCriterion.length) {
-//                            weight *= weightCriterion[i][j];
-//                        } else {
-//                            Double degree = (double) 1 / nameCriterion.length;
-//                            Double rank = Math.pow(weight, degree);
-//                            geometricMean[m] = rank;
-//                            m++;
-//                            weight = 1.0;
-//                        }
-//                    }
-//                }
-//
-//                for (Double aGeometricMean : geometricMean) {
-//                    sumGeometric += aGeometricMean;
-//                }
-//
-//                for (int b = 0; b < geometricMean.length; b++) {
-//                    Criterion criterion = new Criterion();
-//                    criterion.setCriterionName(nameCriterion[b]);
-//                    RatingCriterion ratingCriterion = new RatingCriterion();
-//                    ratingCriterion.setCriterion(criterion);
-//                    ratingCriterion.setDimensionId(dimensionId);
-//                    ratingCriterion.setRating(geometricMean[b] / sumGeometric);
-//                    ratingCriteria.add(b, ratingCriterion);
-//                }
-//                return ratingCriteria;
-//            }
-//        }
+        if (!ratingCriterion.isEmpty()) {
+            Double weight = 1.0;
+            int m = 0;
+            Double geometricMean[] = new Double[ratingCriterion.size()];
+            String weights = "";
+            for (RatingCriterion aRatingCriterion : ratingCriterion) {
+                weights = weights.concat(aRatingCriterion.getWeights().concat(","));
+            }
+            String[] weightCriterionArray = weights.split(",");
+            Double weightCriterion[][] = new Double[ratingCriterion.size()][ratingCriterion.size()];
+            int countCriterion = 0;
+            Double sumGeometric = 0.0;
+            for (int i = 0; i < ratingCriterion.size(); i++) {
+                for (int j = 0; j < ratingCriterion.size(); j++) {
+                    weightCriterion[i][j] = Double.valueOf(weightCriterionArray[countCriterion]);
+                    countCriterion++;
+                }
+            }
+
+            for (Double[] aWeightCriterion : weightCriterion) {
+                for (int j = 0; j < weightCriterion.length + 1; j++) {
+                    if (j != weightCriterion.length) {
+                        weight *= aWeightCriterion[j];
+                    } else {
+                        Double degree = (double) 1 / ratingCriterion.size();
+                        Double rank = Math.pow(weight, degree);
+                        geometricMean[m] = rank;
+                        m++;
+                        weight = 1.0;
+                    }
+                }
+            }
+
+            for (Double aGeometricMean : geometricMean) {
+                sumGeometric += aGeometricMean;
+            }
+            for (int b = 0; b < geometricMean.length; b++) {
+                ratingCriterion.get(b).setRating(geometricMean[b] / sumGeometric * 100);
+                ratingCriterion.get(b).setDimensionId(dimensionId);
+                addOrUpdate(ratingCriterion.get(b));
+            }
+            return ratingCriterion;
+        }
         return null;
     }
 
