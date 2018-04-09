@@ -7,6 +7,7 @@ import repositories.DimensionRepository;
 import services.DimensionService;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,5 +34,10 @@ public class DimensionServiceImpl implements DimensionService {
     @Transactional
     public Dimension get(Integer id) {
         return dimensionRepository.findOne(id);
+    }
+
+    @Transactional
+    public ArrayList<Dimension> getDimensionByExpertId(Integer expertId){
+        return dimensionRepository.getDimensionByExpertId(expertId);
     }
 }

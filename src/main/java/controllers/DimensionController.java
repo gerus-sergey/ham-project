@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import services.DimensionService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,5 +43,14 @@ public class DimensionController {
         }
         dimensionService.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/dimensions/expert/{expertId}")
+    public ResponseEntity getDimensionByExpertId(@PathVariable("expertId") Integer expertId) {
+        ArrayList<Dimension> dimensions = dimensionService.getDimensionByExpertId(expertId);
+        if (dimensions == null) {
+            return new ResponseEntity("No dimensions found for expertId " + expertId, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(dimensions, HttpStatus.OK);
     }
 }

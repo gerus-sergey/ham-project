@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Table(name = "dimensions", schema = "public", catalog = "rating_bd")
 public class Dimension implements Serializable{
     private Integer id;
-    private Integer idExpert;
+    private Integer expertId;
     private Timestamp date;
 
     @Id
@@ -24,12 +24,12 @@ public class Dimension implements Serializable{
     }
 
     @Column(name = "id_expert")
-    public Integer getIdExpert() {
-        return idExpert;
+    public Integer getExpertId() {
+        return expertId;
     }
 
-    public void setIdExpert(Integer idExpert) {
-        this.idExpert = idExpert;
+    public void setExpertId(Integer expertId) {
+        this.expertId = expertId;
     }
 
     @Column(name = "time")
