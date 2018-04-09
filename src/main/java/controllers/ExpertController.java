@@ -42,6 +42,15 @@ public class ExpertController {
         }
         expertService.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
+    }
 
+    @GetMapping("/experts/getByEmail/{email:.+}")
+    public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
+        Expert expert = expertService.getUserByEmail(email.trim());
+        if (expert == null) {
+            return new ResponseEntity("No expert found for email " + email, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(expert, HttpStatus.OK);
     }
 }

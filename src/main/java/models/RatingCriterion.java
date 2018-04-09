@@ -13,6 +13,8 @@ public class RatingCriterion implements Serializable {
     private Double rating;
     private String weights;
 
+    public RatingCriterion(){}
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ratingcriterions_seq")

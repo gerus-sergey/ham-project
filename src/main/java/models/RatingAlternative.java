@@ -14,6 +14,8 @@ public class RatingAlternative implements Serializable {
     private Double rating;
     private String weights;
 
+    public RatingAlternative(){}
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ratingalternatives_seq")

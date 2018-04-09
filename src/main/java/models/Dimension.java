@@ -11,6 +11,8 @@ public class Dimension implements Serializable{
     private Integer expertId;
     private Timestamp date;
 
+    public Dimension(){}
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dimensions_seq")

@@ -12,6 +12,8 @@ public class Criterion implements Serializable {
     private String criterionName;
     private String description;
 
+    public Criterion(){}
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "criterions_seq")

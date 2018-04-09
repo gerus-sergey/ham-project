@@ -8,6 +8,8 @@ public class Alternative {
     private Integer id;
     private String alternativeName;
 
+    public Alternative(){}
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alternatives_seq")

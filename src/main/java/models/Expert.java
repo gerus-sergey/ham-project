@@ -14,6 +14,8 @@ public class Expert implements Serializable{
     private String password;
     private String email;
 
+    public Expert(){}
+
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "experts_seq")
