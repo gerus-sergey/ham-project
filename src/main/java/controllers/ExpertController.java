@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Expert;
+import models.helpers.Credentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,15 @@ public class ExpertController {
         if (expert == null) {
             return new ResponseEntity("No expert found for email " + email, HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity(expert, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/experts/login")
+    public ResponseEntity createUser(@RequestBody Credentials credentials) {
+        if (expertService.getByEmailAndPassword(credentials.getEmail(), credentials.getPassword()) == null) {
+            return new ResponseEntity("No User found for such credentials", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity(expertService.getUserByEmail(credentials.getEmail()), HttpStatus.OK);
+        }
     }
 }

@@ -39,4 +39,9 @@ public class ExpertServiceImpl implements ExpertService{
     public Expert getUserByEmail(String email){
         return expertRepository.findByEmail(email);
     }
+
+    @Transactional
+    public Expert getByEmailAndPassword(String email, String password){
+        return expertRepository.findByEmailAndPassword(email, password);
+    }
 }
