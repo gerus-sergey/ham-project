@@ -10,6 +10,8 @@ public class Dimension implements Serializable{
     private Integer id;
     private Integer expertId;
     private Timestamp date;
+    private String name;
+    private String comment;
 
     public Dimension(){}
 
@@ -41,5 +43,23 @@ public class Dimension implements Serializable{
 
     public void setDate(Timestamp date) {
         this.date = date;
+    }
+
+    @Column(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Column(name = "comment")
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
