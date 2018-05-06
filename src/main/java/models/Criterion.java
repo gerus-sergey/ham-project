@@ -11,6 +11,7 @@ public class Criterion implements Serializable {
     private Integer id;
     private String criterionName;
     private String description;
+    private Integer expertId;
 
     public Criterion(){}
 
@@ -42,6 +43,15 @@ public class Criterion implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "id_expert")
+    public Integer getExpertId() {
+        return expertId;
+    }
+
+    public void setExpertId(Integer expertId) {
+        this.expertId = expertId;
     }
 
     @Override

@@ -7,6 +7,7 @@ package controllers;
         import services.CriterionService;
         import org.springframework.beans.factory.annotation.Autowired;
 
+        import java.util.ArrayList;
         import java.util.List;
 
 @RestController
@@ -42,5 +43,14 @@ public class CriterionsController {
         }
         criterionService.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/criterions/expert/{expertId}")
+    public ResponseEntity getCriterionsByExpertId(@PathVariable("expertId") Integer expertId) {
+        ArrayList<Criterion> alternative = criterionService.getCriterionByExpertId(expertId);
+        if (alternative == null) {
+            return new ResponseEntity("No criterions found for expert ID " + expertId, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(alternative, HttpStatus.OK);
     }
 }

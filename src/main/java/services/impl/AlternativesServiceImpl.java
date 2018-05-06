@@ -7,6 +7,7 @@ import repositories.AlternativesRepository;
 import services.AlternativesService;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,5 +34,10 @@ public class AlternativesServiceImpl implements AlternativesService {
     @Transactional
     public Alternative get(Integer id) {
         return alternativesRepository.findOne(id);
+    }
+
+    @Transactional
+    public ArrayList<Alternative> getAlternativeByExpertId(Integer expertId){
+        return alternativesRepository.getAlternativeByExpertId(expertId);
     }
 }
