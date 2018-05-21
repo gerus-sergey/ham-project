@@ -2,6 +2,8 @@ package services.impl;
 
 import models.RatingCriterion;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import repositories.RatingCriterionRepository;
 import services.RatingCriterionsService;
 import org.springframework.stereotype.Service;
@@ -37,12 +39,12 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
     }
 
     @Transactional
-    public ArrayList<RatingCriterion> getRatingCriterionByDimensionId(Integer dimensionId){
+    public ArrayList<RatingCriterion> getRatingCriterionByDimensionId(Integer dimensionId) {
         return ratingCriterionRepository.getRatingCriterionByDimensionId(dimensionId);
     }
 
     @Override
-    public ArrayList<RatingCriterion> calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriterion) {
+    public ResponseEntity calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriterion) {
 
         if (!ratingCriterion.isEmpty()) {
             Double weight = 1.0;
@@ -80,13 +82,91 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
             for (Double aGeometricMean : geometricMean) {
                 sumGeometric += aGeometricMean;
             }
-            for (int b = 0; b < geometricMean.length; b++) {
-                ratingCriterion.get(b).setRating(geometricMean[b] / sumGeometric);
-                ratingCriterion.get(b).setDimensionId(dimensionId);
-                addOrUpdate(ratingCriterion.get(b));
+
+            Double[][] NW = new Double[ratingCriterion.size()][1];
+
+            for (int b = 0; b < NW.length; b++) {
+                NW[b][0] = geometricMean[b] / sumGeometric;
             }
-            return ratingCriterion;
+
+            Double[][] multipleMatrix = matrixMultiplication(weightCriterion, NW);
+            Double lamdaSum = 0.0;
+
+            for (int i = 0; i < multipleMatrix.length; i++) {
+                Double lamda = multipleMatrix[i][0] / NW[i][0];
+                lamdaSum += lamda;
+            }
+
+            Double lamda = lamdaSum / multipleMatrix.length;
+            Double CI = (lamda - ratingCriterion.size()) / (ratingCriterion.size() - 1);
+            Double RI = 0.0;
+
+            switch (ratingCriterion.size()) {
+                case 2:
+                    RI = 0.2;
+                    break;
+                case 3:
+                    RI = 0.388;
+                    break;
+                case 4:
+                    RI = 0.575;
+                    break;
+                case 5:
+                    RI = 0.766;
+                    break;
+                case 6:
+                    RI = 0.951;
+                    break;
+                case 7:
+                    RI = 1.146;
+                    break;
+                case 8:
+                    RI = 1.349;
+                    break;
+            }
+
+            Double CR = CI / RI;
+
+            if (CR >= getNumberLogicalConsistency(ratingCriterion.size()) || CR <= 0) {
+                return new ResponseEntity("The matrix is not consistent", HttpStatus.CONFLICT);
+            } else {
+                for (int i = 0; i < ratingCriterion.size(); i++) {
+                    ratingCriterion.get(i).setRating(NW[i][0]);
+                    ratingCriterion.get(i).setDimensionId(dimensionId);
+                    addOrUpdate(ratingCriterion.get(i));
+                }
+                return new ResponseEntity(ratingCriterion, HttpStatus.OK);
+            }
         }
         return null;
+    }
+
+    private Double[][] matrixMultiplication(Double[][] matrixOne, Double[][] matrixTwo) {
+        int m = matrixOne.length;
+        int n = matrixTwo[0].length;
+        int o = matrixTwo.length;
+        Double[][] res = new Double[m][n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res[i][j] = 0.0;
+                for (int k = 0; k < o; k++) {
+                    res[i][j] += matrixOne[i][k] * matrixTwo[k][j];
+                }
+            }
+        }
+        return res;
+    }
+
+    private Double getNumberLogicalConsistency(Integer countCriterions) {
+        Double numberConsistency;
+        if (countCriterions <= 3) {
+            numberConsistency = 0.05;
+        } else if (countCriterions <= 5) {
+            numberConsistency = 0.08;
+        } else {
+            numberConsistency = 0.1;
+        }
+        return numberConsistency;
     }
 }

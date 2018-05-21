@@ -89,11 +89,9 @@ public class RatingAlternativesServiceImpl implements RatingAlternativesService 
                 sumGeometric += geometricMean[a];
             }
 
-            Long normalizedWeight[] = new Long[ratingAlternatives.size()];
-
             for (int b = 0; b < geometricMean.length; b++) {
                 ratingAlternatives.get(b).setDimensionId(dimensionId);
-                ratingAlternatives.get(b).setRating((double) (Math.round((geometricMean[b] / sumGeometric) * 10000) / 100));
+                ratingAlternatives.get(b).setRating(geometricMean[b] / sumGeometric);
                 addOrUpdate(ratingAlternatives.get(b));
             }
             return ratingAlternatives;

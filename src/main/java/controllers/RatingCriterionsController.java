@@ -20,12 +20,7 @@ public class RatingCriterionsController {
     @PostMapping(value = "/rating-criterions/{dimensionId}")
     public ResponseEntity calculateRatingCriterions(@PathVariable("dimensionId") Integer id,
                                                     @RequestBody ArrayList<RatingCriterion> ratingCriterion) {
-        ArrayList<RatingCriterion> ratingCriterions = ratingCriterionsService.calculateRatingCriterions(id, ratingCriterion);
-        if (ratingCriterions != null) {
-            return new ResponseEntity(ratingCriterions, HttpStatus.OK);
-        } else {
-            return new ResponseEntity("Error ", HttpStatus.NOT_FOUND);
-        }
+         return ratingCriterionsService.calculateRatingCriterions(id, ratingCriterion);
     }
 
     @GetMapping(path = "/rating-criterions")

@@ -1,10 +1,11 @@
 package services;
 
 import models.RatingCriterion;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 
 public interface RatingCriterionsService extends CRUDService<RatingCriterion, Integer>{
-    ArrayList<RatingCriterion> calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriteria);
+    ResponseEntity calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriteria);
     ArrayList<RatingCriterion> getRatingCriterionByDimensionId(Integer dimensionId);
 }
