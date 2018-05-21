@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "experts", schema = "public", catalog = "rating_bd")
-public class Expert implements Serializable{
+public class Expert implements Serializable {
     private Integer id;
     private String lastName;
     private String firstName;
@@ -13,8 +13,10 @@ public class Expert implements Serializable{
     private String position;
     private String password;
     private String email;
+    private Roles role;
 
-    public Expert(){}
+    public Expert() {
+    }
 
     @Id
     @Column(name = "id", nullable = false)
@@ -82,6 +84,16 @@ public class Expert implements Serializable{
         this.email = email;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    public Roles getRole() {
+        return role;
+    }
+
+    public void setRole(Roles role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "Expert{" +
@@ -92,6 +104,7 @@ public class Expert implements Serializable{
                 ", position='" + position + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", role=" + role +
                 '}';
     }
 }
