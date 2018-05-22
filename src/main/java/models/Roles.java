@@ -1,10 +1,11 @@
 package models;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "roles", schema = "public", catalog = "rating_bd")
-public class Roles {
+public class Roles implements Serializable {
     private Integer id;
     private String name;
 

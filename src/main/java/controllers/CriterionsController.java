@@ -1,14 +1,13 @@
 package controllers;
 
-        import models.Criterion;
-        import org.springframework.http.HttpStatus;
-        import org.springframework.http.ResponseEntity;
-        import org.springframework.web.bind.annotation.*;
-        import services.CriterionService;
-        import org.springframework.beans.factory.annotation.Autowired;
-
-        import java.util.ArrayList;
-        import java.util.List;
+import models.Criterion;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import services.CriterionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class CriterionsController {
