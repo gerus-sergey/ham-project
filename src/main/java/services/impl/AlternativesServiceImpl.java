@@ -35,9 +35,4 @@ public class AlternativesServiceImpl implements AlternativesService {
     public Alternative get(Integer id) {
         return alternativesRepository.findOne(id);
     }
-
-    @Transactional
-    public ArrayList<Alternative> getAlternativeByExpertId(Integer expertId){
-        return alternativesRepository.getAlternativeByExpertId(expertId);
-    }
 }

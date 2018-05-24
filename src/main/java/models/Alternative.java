@@ -7,7 +7,6 @@ import javax.persistence.*;
 public class Alternative {
     private Integer id;
     private String alternativeName;
-    private Integer expertId;
 
     public Alternative(){}
 
@@ -30,15 +29,6 @@ public class Alternative {
 
     public void setAlternativeName(String alternativeName) {
         this.alternativeName = alternativeName;
-    }
-
-    @Column(name = "id_expert")
-    public Integer getExpertId() {
-        return expertId;
-    }
-
-    public void setExpertId(Integer expertId) {
-        this.expertId = expertId;
     }
 
     @Override

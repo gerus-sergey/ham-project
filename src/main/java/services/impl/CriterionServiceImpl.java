@@ -35,9 +35,4 @@ public class CriterionServiceImpl implements CriterionService {
     public Criterion get(Integer id) {
         return criterionRepository.findOne(id);
     }
-
-    @Transactional
-    public ArrayList<Criterion> getCriterionByExpertId(Integer expertId) {
-        return criterionRepository.getCriteriaByExpertId(expertId);
-    }
 }

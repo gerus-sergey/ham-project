@@ -44,13 +44,4 @@ public class AlternativesController {
         alternativesService.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
     }
-
-    @GetMapping(path = "/alternatives/expert/{expertId}")
-    public ResponseEntity getAlternativeByExpertId(@PathVariable("expertId") Integer expertId) {
-        ArrayList<Alternative> alternative = alternativesService.getAlternativeByExpertId(expertId);
-        if (alternative == null) {
-            return new ResponseEntity("No Alternative found for expert ID " + expertId, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity(alternative, HttpStatus.OK);
-    }
 }
