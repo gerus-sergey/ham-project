@@ -3,6 +3,7 @@ package controllers;
 import models.AlternativesSet;
 import models.Expert;
 import models.ExpertsToAlternativeSet;
+import models.helpers.ExpertsToAlternativeSetPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,5 +61,19 @@ public class ExpertsToAlternativeSetController {
         ExpertsToAlternativeSet expertsToAlternativeSet = new ExpertsToAlternativeSet(alternativesSet, expert);
         expertsToAlternativeSetService.addOrUpdate(expertsToAlternativeSet);
         return new ResponseEntity(expertsToAlternativeSet, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/expertsToAlternativesSet")
+    public ResponseEntity deleteExpertsToAlternativesSet(@RequestParam("alternativeSetId") Integer alternativeSetId,
+                                                         @RequestParam("expertId") Integer expertId) {
+
+        AlternativesSet alternativesSet = alternativesSetService.get(alternativeSetId);
+        if (alternativesSet == null) return new ResponseEntity("No alternative set found", HttpStatus.NOT_FOUND);
+        Expert expert = expertService.get(expertId);
+        if (expert == null) return new ResponseEntity("No expert found", HttpStatus.NOT_FOUND);
+
+        ExpertsToAlternativeSetPK expertsToAlternativeSet = new ExpertsToAlternativeSetPK(expert, alternativesSet);
+        expertsToAlternativeSetService.delete(expertsToAlternativeSet);
+        return new ResponseEntity("OK", HttpStatus.OK);
     }
 }

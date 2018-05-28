@@ -3,6 +3,7 @@ package controllers;
 import models.CriterionsSet;
 import models.Expert;
 import models.ExpertsToCriterionSet;
+import models.helpers.ExpertsToCriterionSetPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,5 +63,19 @@ public class ExpertsToCriterionSetController {
         ExpertsToCriterionSet expertsToCriterionSet = new ExpertsToCriterionSet(criterionsSet, expert);
         expertsToCriterionSetService.addOrUpdate(expertsToCriterionSet);
         return new ResponseEntity(expertsToCriterionSet, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/expertsToCriterionSet")
+    public ResponseEntity deleteExpertsToCriterionSet(@RequestParam("criterionSetId") Integer criterionSetId,
+                                                      @RequestParam("expertId") Integer expertId) {
+
+        CriterionsSet criterionsSet = criterionsSetService.get(criterionSetId);
+        if (criterionsSet == null) return new ResponseEntity("No criterions set found", HttpStatus.NOT_FOUND);
+        Expert expert = expertService.get(expertId);
+        if (expert == null) return new ResponseEntity("No expert found", HttpStatus.NOT_FOUND);
+
+        ExpertsToCriterionSetPK expertsToCriterionSet = new ExpertsToCriterionSetPK(criterionsSet, expert);
+        expertsToCriterionSetService.delete(expertsToCriterionSet);
+        return new ResponseEntity("OK", HttpStatus.OK);
     }
 }

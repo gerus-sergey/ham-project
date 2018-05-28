@@ -3,6 +3,7 @@ package controllers;
 import models.Criterion;
 import models.CriterionsSet;
 import models.CriterionsToCriterionSet;
+import models.helpers.CriterionsToCriterionSetPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,6 @@ public class CriterionsToCriterionSetController {
     @PostMapping(value = "/criterionsToCriterionSet")
     public ResponseEntity createCriterionsToCriterionSet(@RequestParam("criterionSetId") Integer criterionSetId,
                                                          @RequestParam("criterionId") Integer criterionId) {
-
         CriterionsSet criterionsSet = criterionsSetService.get(criterionSetId);
         if (criterionsSet == null) return new ResponseEntity("No criterions set found", HttpStatus.NOT_FOUND);
         Criterion criterion = criterionService.get(criterionId);
@@ -53,4 +53,18 @@ public class CriterionsToCriterionSetController {
         criterionsToCriterionSetService.addOrUpdate(criterionsToCriterionSet);
         return new ResponseEntity(criterionsToCriterionSet, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/criterionsToCriterionSet")
+    public ResponseEntity deleteCriterionsToCriterionSet(@RequestParam("criterionSetId") Integer criterionSetId,
+                                                         @RequestParam("criterionId") Integer criterionId) {
+        CriterionsSet criterionsSet = criterionsSetService.get(criterionSetId);
+        if (criterionsSet == null) return new ResponseEntity("No criterions set found", HttpStatus.NOT_FOUND);
+        Criterion criterion = criterionService.get(criterionId);
+        if (criterion == null) return new ResponseEntity("No criterion found", HttpStatus.NOT_FOUND);
+
+        CriterionsToCriterionSetPK criterionsToCriterionSet = new CriterionsToCriterionSetPK(criterionsSet, criterion);
+        criterionsToCriterionSetService.delete(criterionsToCriterionSet);
+        return new ResponseEntity("Ok", HttpStatus.OK);
+    }
+
 }

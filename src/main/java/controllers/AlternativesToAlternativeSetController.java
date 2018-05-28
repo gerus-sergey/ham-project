@@ -3,6 +3,7 @@ package controllers;
 import models.Alternative;
 import models.AlternativesSet;
 import models.AlternativesToAlternativeSet;
+import models.helpers.AlternativesToAlternativeSetPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,4 +56,18 @@ public class AlternativesToAlternativeSetController {
         return new ResponseEntity(alternativesToAlternativeSet, HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/alternativesToAlternativeSet")
+    public ResponseEntity deleteAlternativesToAlternativeSet(@RequestParam("alternativesSetId") Integer alternativesSetId,
+                                                             @RequestParam("alternativeId") Integer alternativeId) {
+
+        AlternativesSet alternativesSet = alternativesSetService.get(alternativesSetId);
+        if (alternativesSet == null) return new ResponseEntity("No alternatives set found", HttpStatus.NOT_FOUND);
+
+        Alternative alternative = alternativesService.get(alternativeId);
+        if (alternative == null) return new ResponseEntity("No alternative found", HttpStatus.NOT_FOUND);
+
+        AlternativesToAlternativeSetPK alternativesToAlternativeSet = new AlternativesToAlternativeSetPK(alternative, alternativesSet);
+        alternativesToAlternativeSetService.delete(alternativesToAlternativeSet);
+        return new ResponseEntity("OK", HttpStatus.OK);
+    }
 }
