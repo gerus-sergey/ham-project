@@ -11,7 +11,7 @@ import java.io.Serializable;
         @AssociationOverride(name = "PK.alternativesSet", joinColumns = @JoinColumn(name = "id_alternative_set")),
         @AssociationOverride(name = "PK.expert", joinColumns = @JoinColumn(name = "id_expert"))
 })
-public class ExpertsToAlternativeSet implements Serializable {
+public class ExpertsToAlternativeSet extends ExpertsToAlternativeSetPK implements Serializable {
     ExpertsToAlternativeSetPK pk = new ExpertsToAlternativeSetPK();
 
     public ExpertsToAlternativeSet() {
