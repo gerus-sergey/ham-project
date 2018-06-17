@@ -90,15 +90,14 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
             }
 
             Double[][] multipleMatrix = matrixMultiplication(weightCriterion, NW);
-            Double lamdaSum = 0.0;
+            Double lambdaSum = 0.0;
 
             for (int i = 0; i < multipleMatrix.length; i++) {
-                Double lamda = multipleMatrix[i][0] / NW[i][0];
-                lamdaSum += lamda;
+                lambdaSum += multipleMatrix[i][0] / NW[i][0];
             }
 
-            Double lamda = lamdaSum / multipleMatrix.length;
-            Double CI = (lamda - ratingCriterion.size()) / (ratingCriterion.size() - 1);
+            Double lambda = lambdaSum / multipleMatrix.length;
+            Double CI = (lambda - ratingCriterion.size()) / (ratingCriterion.size() - 1);
             Double RI = 0.0;
 
             switch (ratingCriterion.size()) {
@@ -128,7 +127,8 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
             Double CR = CI / RI;
 
             if (CR >= getNumberLogicalConsistency(ratingCriterion.size()) || CR <= 0) {
-                return new ResponseEntity("The matrix is not consistent", HttpStatus.CONFLICT);
+                System.out.print("CR = " + CR);
+                return new ResponseEntity(String.format("%.2g%n", CR), HttpStatus.CONFLICT);
             } else {
                 for (int i = 0; i < ratingCriterion.size(); i++) {
                     ratingCriterion.get(i).setRating(NW[i][0]);

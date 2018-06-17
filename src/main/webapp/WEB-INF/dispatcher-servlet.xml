@@ -39,6 +39,9 @@
         <property name="maxUploadSize" value="99999999" />
     </bean>
 
+    <mvc:resources mapping="/assets/img/**" location="/assets/img/"/>
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/fonts/**" location="/fonts/"/>
     <mvc:cors>
         <mvc:mapping path="/**"
             allowed-origins="http://localhost:4200/"

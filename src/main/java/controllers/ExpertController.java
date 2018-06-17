@@ -46,7 +46,7 @@ public class ExpertController {
     }
 
     @GetMapping("/experts/getByEmail/{email:.+}")
-    public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
+    public ResponseEntity getExpertByEmail(@PathVariable("email") String email) {
         Expert expert = expertService.getUserByEmail(email.trim());
         if (expert == null) {
             return new ResponseEntity("No expert found for email " + email, HttpStatus.NOT_FOUND);
@@ -55,7 +55,7 @@ public class ExpertController {
     }
 
     @PostMapping(value = "/experts/login")
-    public ResponseEntity createUser(@RequestBody Credentials credentials) {
+    public ResponseEntity getExpertLogin(@RequestBody Credentials credentials) {
         if (expertService.getByEmailAndPassword(credentials.getEmail(), credentials.getPassword()) == null) {
             return new ResponseEntity("No User found for such credentials", HttpStatus.NOT_FOUND);
         } else {
