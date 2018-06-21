@@ -44,63 +44,56 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
     }
 
     @Override
-    public ResponseEntity calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriterion) {
+    public ResponseEntity calculateRatingCriterions(Integer dimensionId, ArrayList<RatingCriterion> ratingCriterions) {
 
-        if (!ratingCriterion.isEmpty()) {
-            Double weight = 1.0;
-            int m = 0;
-            Double geometricMean[] = new Double[ratingCriterion.size()];
-            String weights = "";
-            for (RatingCriterion aRatingCriterion : ratingCriterion) {
-                weights = weights.concat(aRatingCriterion.getWeights().concat(","));
-            }
-            String[] weightCriterionArray = weights.split(",");
-            Double weightCriterion[][] = new Double[ratingCriterion.size()][ratingCriterion.size()];
-            int countCriterion = 0;
-            Double sumGeometric = 0.0;
-            for (int i = 0; i < ratingCriterion.size(); i++) {
-                for (int j = 0; j < ratingCriterion.size(); j++) {
-                    weightCriterion[i][j] = Double.valueOf(weightCriterionArray[countCriterion]);
-                    countCriterion++;
+        if (!ratingCriterions.isEmpty()) {
+            Double weightCriterions[][] = new Double[ratingCriterions.size()][ratingCriterions.size()];
+            for (int i = 0; i < ratingCriterions.size(); i++) {
+                String weightsCriterionArray[] = ratingCriterions.get(i).getWeights().split(",");
+                if(weightsCriterionArray.length != ratingCriterions.size()) return new ResponseEntity("Number of criteria and weights doesn't match", HttpStatus.CONFLICT);
+                for (int j = 0; j < ratingCriterions.size(); j++) {
+                    weightCriterions[i][j] = Double.valueOf(weightsCriterionArray[j]);
                 }
             }
 
-            for (Double[] aWeightCriterion : weightCriterion) {
-                for (int j = 0; j < weightCriterion.length + 1; j++) {
-                    if (j != weightCriterion.length) {
+            Double weight = 1.0;
+            int m = 0;
+            Double geometricMeans[] = new Double[ratingCriterions.size()];
+            for (Double[] aWeightCriterion : weightCriterions) {
+                for (int j = 0; j < weightCriterions.length + 1; j++) {
+                    if (j != weightCriterions.length) {
                         weight *= aWeightCriterion[j];
                     } else {
-                        Double degree = (double) 1 / ratingCriterion.size();
+                        Double degree = (double) 1 / ratingCriterions.size();
                         Double rank = Math.pow(weight, degree);
-                        geometricMean[m] = rank;
+                        geometricMeans[m] = rank;
                         m++;
                         weight = 1.0;
                     }
                 }
             }
 
-            for (Double aGeometricMean : geometricMean) {
-                sumGeometric += aGeometricMean;
+            Double sumGeometric = 0.0;
+            for (Double geometricMean : geometricMeans) {
+                sumGeometric += geometricMean;
             }
 
-            Double[][] NW = new Double[ratingCriterion.size()][1];
-
+            Double[][] NW = new Double[ratingCriterions.size()][1];
             for (int b = 0; b < NW.length; b++) {
-                NW[b][0] = geometricMean[b] / sumGeometric;
+                NW[b][0] = geometricMeans[b] / sumGeometric;
             }
 
-            Double[][] multipleMatrix = matrixMultiplication(weightCriterion, NW);
+            Double[][] multipleMatrix = matrixMultiplication(weightCriterions, NW);
             Double lambdaSum = 0.0;
-
             for (int i = 0; i < multipleMatrix.length; i++) {
                 lambdaSum += multipleMatrix[i][0] / NW[i][0];
             }
 
             Double lambda = lambdaSum / multipleMatrix.length;
-            Double CI = (lambda - ratingCriterion.size()) / (ratingCriterion.size() - 1);
+            Double CI = (lambda - ratingCriterions.size()) / (ratingCriterions.size() - 1);
             Double RI = 0.0;
 
-            switch (ratingCriterion.size()) {
+            switch (ratingCriterions.size()) {
                 case 2:
                     RI = 0.2;
                     break;
@@ -124,18 +117,17 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
                     break;
             }
 
-            Double CR = CI / RI;
-
-            if (CR >= getNumberLogicalConsistency(ratingCriterion.size()) || CR <= 0) {
+            Double CR = CI / RI * 100;
+            if (CR >= getNumberLogicalConsistency(ratingCriterions.size())) {
                 System.out.print("CR = " + CR);
                 return new ResponseEntity(String.format("%.2g%n", CR), HttpStatus.CONFLICT);
             } else {
-                for (int i = 0; i < ratingCriterion.size(); i++) {
-                    ratingCriterion.get(i).setRating(NW[i][0]);
-                    ratingCriterion.get(i).setDimensionId(dimensionId);
-                    addOrUpdate(ratingCriterion.get(i));
+                for (int i = 0; i < ratingCriterions.size(); i++) {
+                    ratingCriterions.get(i).setRating(NW[i][0]);
+                    ratingCriterions.get(i).setDimensionId(dimensionId);
+                    addOrUpdate(ratingCriterions.get(i));
                 }
-                return new ResponseEntity(ratingCriterion, HttpStatus.OK);
+                return new ResponseEntity(ratingCriterions, HttpStatus.OK);
             }
         }
         return null;
@@ -158,14 +150,14 @@ public class RatingCriterionsServiceImpl implements RatingCriterionsService {
         return res;
     }
 
-    private Double getNumberLogicalConsistency(Integer countCriterions) {
-        Double numberConsistency;
+    private Integer getNumberLogicalConsistency(Integer countCriterions) {
+        Integer numberConsistency;
         if (countCriterions <= 3) {
-            numberConsistency = 0.05;
+            numberConsistency = 5;
         } else if (countCriterions <= 5) {
-            numberConsistency = 0.08;
+            numberConsistency = 8;
         } else {
-            numberConsistency = 0.1;
+            numberConsistency = 10;
         }
         return numberConsistency;
     }

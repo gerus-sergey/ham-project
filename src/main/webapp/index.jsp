@@ -5,12 +5,13 @@
     <title>Ham project</title>
     <base href="/">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="fonts/styles.596834b245cd2d6154ae.bundle.css" rel="stylesheet"/></head>
+    <link rel="icon" type="image/x-icon" href="fonts/favicon.ico">
+    <link href="fonts/styles.596834b245cd2d6154ae.bundle.css" rel="stylesheet"/>
+</head>
 <body style="background-color: #edeef0;">
 <app-root>
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%)">
-    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
     </div>
 </app-root>
 <script type="text/javascript" src="js/inline.318b50c57b4eba3d437b.bundle.js"></script>
